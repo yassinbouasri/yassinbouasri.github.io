@@ -192,77 +192,21 @@ window.addEventListener('scroll', function() {
 function preloadImages() {
     const images = document.querySelectorAll('img');
     images.forEach(img => {
-        img.addEventListener('load', function() {
-            this.classList.add('loaded');
-        });
+        // If image is already loaded, add loaded class immediately
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', function() {
+                this.classList.add('loaded');
+            });
+        }
     });
 }
 
 // Initialize image preloading
 preloadImages();
 
-// Add CSS for mobile menu active state
-const mobileMenuStyles = `
-    @media (max-width: 768px) {
-        .nav-links {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            padding: var(--spacing-md);
-            flex-direction: column;
-            gap: var(--spacing-md);
-            transform: translateY(-100%);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-links.active {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .mobile-menu-btn.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .mobile-menu-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .mobile-menu-btn.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-        }
-    }
-    
-    .navbar.scrolled {
-        background-color: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-    
-    .dark-theme .navbar.scrolled {
-        background-color: rgba(28, 28, 30, 0.95);
-    }
-    
-    img.loaded {
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-    
-    img {
-        opacity: 0;
-    }
-`;
-
-// Inject mobile menu styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = mobileMenuStyles;
-document.head.appendChild(styleSheet);
+// Mobile menu styles are now in CSS file
 
 // Add analytics tracking (if needed)
 function trackEvent(eventName, eventData = {}) {
