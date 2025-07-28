@@ -3,1563 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speak2Text Support - Real-Time Speech to Text & Translation</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --accent: #4cc9f0;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fb;
-            color: var(--dark);
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo i {
-            font-size: 2rem;
-        }
-        
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 0;
-        }
-        
-        nav a:hover {
-            opacity: 0.9;
-        }
-        
-        /* Hero Section */
-        .hero {
-            padding: 4rem 0;
-            background: linear-gradient(rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05)), 
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="white"/><circle cx="50" cy="50" r="40" fill="%234361ee" opacity="0.05"/></svg>');
-            background-size: 300px;
-            text-align: center;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            margin: 0 auto 2rem;
-            color: var(--gray);
-        }
-        
-        .app-badge {
-            display: inline-block;
-            background: var(--dark);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            margin: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: transform 0.3s;
-        }
-        
-        .app-badge:hover {
-            transform: translateY(-3px);
-        }
-        
-        .feature-highlights {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .feature-tag {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        /* Section Styling */
-        section {
-            padding: 4rem 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .section-title h2 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: var(--accent);
-        }
-        
-        .section-title p {
-            color: var(--gray);
-            max-width: 700px;
-            margin: 20px auto 0;
-        }
-        
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: var(--card-shadow);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        
-        .card h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-        
-        .card ul {
-            padding-left: 20px;
-            margin: 15px 0;
-            flex-grow: 1;
-        }
-        
-        .card ul li {
-            margin-bottom: 8px;
-            position: relative;
-            padding-left: 10px;
-        }
-        
-        .card ul li:before {
-            content: "•";
-            color: var(--primary);
-            position: absolute;
-            left: 0;
-        }
-        
-        /* Feature Table */
-        .feature-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .feature-table th, .feature-table td {
-            padding: 15px 20px;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .feature-table th {
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-        
-        .feature-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .feature-table tr:nth-child(even) {
-            background: var(--light);
-        }
-        
-        .feature-table .check {
-            color: var(--success);
-            font-weight: bold;
-        }
-        
-        /* FAQ Section */
-        .faq-section {
-            background-color: #f8f9fe;
-        }
-        
-        .faq-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .faq-item {
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            transition: var(--transition);
-        }
-        
-        .faq-item:hover {
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        
-        .faq-question {
-            padding: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--light);
-        }
-        
-        .faq-question i {
-            transition: transform 0.3s;
-        }
-        
-        .faq-answer {
-            padding: 0 20px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s, padding 0.3s;
-        }
-        
-        .faq-item.active .faq-answer {
-            padding: 20px;
-            max-height: 500px;
-        }
-        
-        .faq-item.active .faq-question i {
-            transform: rotate(180deg);
-        }
-        
-        /* Contact Section */
-        .contact-section {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05));
-        }
-        
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-        
-        .contact-info h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-        
-        .contact-detail {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            align-items: flex-start;
-        }
-        
-        .contact-detail i {
-            font-size: 1.5rem;
-            color: var(--primary);
-            min-width: 30px;
-        }
-        
-        .contact-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 25px;
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: background 0.3s, transform 0.3s;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .btn:hover {
-            background: var(--secondary);
-            transform: translateY(-3px);
-        }
-        
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 0 1rem;
-        }
-        
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-col h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .footer-col h3::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 40px;
-            height: 2px;
-            background: var(--primary);
-        }
-        
-        .footer-col ul {
-            list-style: none;
-        }
-        
-        .footer-col ul li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-col a {
-            color: #b0b0b0;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-col a:hover {
-            color: white;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transition: background 0.3s;
-        }
-        
-        .social-links a:hover {
-            background: var(--primary);
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #b0b0b0;
-            font-size: 0.9rem;
-        }
-        
-        /* New Sections */
-        .feature-showcase {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .feature-card {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--card-shadow);
-            transition: var(--transition);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .feature-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .troubleshooting-section {
-            background-color: #f0f8ff;
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        
-        .troubleshooting-item {
-            margin-bottom: 20px;
-        }
-        
-        .troubleshooting-item h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 40px;
-            position: relative;
-        }
-        
-        .search-container input {
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--light-gray);
-            font-size: 1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            padding-left: 50px;
-        }
-        
-        .search-container i {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-        
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .video-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            transition: var(--transition);
-        }
-        
-        .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .video-thumb {
-            height: 180px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 4rem;
-        }
-        
-        .video-info {
-            padding: 20px;
-        }
-        
-        .compatibility {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .compatibility-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .requirements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .requirements-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .requirements-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-        
-        .testimonial {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: var(--card-shadow);
-            position: relative;
-        }
-        
-        .testimonial:before {
-            content: """;
-            font-size: 5rem;
-            color: var(--light-gray);
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            line-height: 1;
-        }
-        
-        .testimonial-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .testimonial-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-            
-            nav ul {
-                justify-content: center;
-            }
-            
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero h2 {
-                font-size: 2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            nav ul {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .feature-table {
-                font-size: 0.85rem;
-            }
-            
-            .feature-table th, 
-            .feature-table td {
-                padding: 10px 15px;
-            }
-        }
-        
-        /* Dark mode */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #121212;
-                color: #e0e0e0;
-            }
-            
-            .card,
-            .faq-item,
-            .feature-card,
-            .video-card,
-            .requirements-card,
-            .testimonial {
-                background: #1e1e1e;
-                color: #e0e0e0;
-            }
-            
-            .card:hover,
-            .feature-card:hover,
-            .video-card:hover {
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            }
-            
-            .feature-table {
-                background: #1e1e1e;
-                color: #e0e0e0;
-            }
-            
-            .feature-table th {
-                background: var(--secondary);
-            }
-            
-            .feature-table tr:nth-child(even) {
-                background: #252525;
-            }
-            
-            .faq-question {
-                background: #252525;
-            }
-            
-            .troubleshooting-section {
-                background-color: #1a2a3a;
-            }
-        }
-    </style>
+    <title>Speak2Text Support - Voice-to-Text Translation App</title>
+    <meta name="description" content="Get help with Speak2Text, the powerful voice-to-text translation app with real-time speech recognition and translation support for 20+ languages.">
+    <link rel="stylesheet" href="support.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-microphone-alt"></i>
-                <h1>Speak2Text Support</h1>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="images/apple-touch-icon.png" alt="Speak2Text" class="nav-icon-img">
+                <span class="nav-title">Speak2Text</span>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#getting-started"><i class="fas fa-play-circle"></i> Getting Started</a></li>
-                    <li><a href="#features"><i class="fas fa-star"></i> Features</a></li>
-                    <li><a href="#troubleshooting"><i class="fas fa-tools"></i> Troubleshooting</a></li>
-                    <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQs</a></li>
-                    <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
-                </ul>
-            </nav>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#support" class="nav-link">Support</a>
+                <a href="#privacy" class="nav-link">Privacy</a>
+                <a href="#download" class="nav-link download-btn">Download</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </header>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container hero-content">
-            <h2>Welcome to Speak2Text Support</h2>
-            <p>Your guide to mastering real-time speech-to-text, translation, and AI-powered note-taking. Find answers, tips, and expert support.</p>
-            
-            <div class="feature-highlights">
-                <div class="feature-tag"><i class="fas fa-language"></i> 20+ Languages</div>
-                <div class="feature-tag"><i class="fas fa-bolt"></i> Real-Time Transcription</div>
-                <div class="feature-tag"><i class="fas fa-robot"></i> AI-Powered Notes</div>
-                <div class="feature-tag"><i class="fas fa-lock"></i> Privacy Focused</div>
-            </div>
-            
-            <div class="compatibility">
-                <div class="compatibility-item">
-                    <i class="fab fa-apple"></i>
-                    <div>
-                        <strong>Compatibility:</strong> iOS 15.0+
-                    </div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <img src="images/android-chrome-192x192.png" alt="Speak2Text Logo" class="hero-logo-img">
                 </div>
-                <div class="compatibility-item">
-                    <i class="fas fa-mobile-alt"></i>
-                    <div>
-                        <strong>Devices:</strong> iPhone, iPad, iPod Touch
-                    </div>
-                </div>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <a href="https://apps.apple.com" class="app-badge">
-                    <i class="fab fa-apple"></i> Download on App Store
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Getting Started -->
-    <section id="getting-started">
-        <div class="container">
-            <div class="section-title">
-                <h2>Getting Started</h2>
-                <p>Quick setup guide to start using Speak2Text effectively</p>
-            </div>
-            
-            <div class="cards-grid">
-                <div class="card">
-                    <i class="fas fa-microphone"></i>
-                    <h3>Microphone & Permissions</h3>
-                    <p>To start using Speak2Text:</p>
-                    <ul>
-                        <li>Open Settings > Privacy > Microphone</li>
-                        <li>Enable Speak2Text access</li>
-                        <li>Allow Speech Recognition when prompted</li>
-                        <li>Grant Calendar access for date detection</li>
-                    </ul>
-                </div>
-                
-                <div class="card">
-                    <i class="fas fa-globe"></i>
-                    <h3>Language Configuration</h3>
-                    <p>Set up your preferred languages:</p>
-                    <ul>
-                        <li>Tap the language icon in the top toolbar</li>
-                        <li>Select source language for speech recognition</li>
-                        <li>Choose target languages for translation</li>
-                        <li>Save your preferences</li>
-                    </ul>
-                </div>
-                
-                <div class="card">
-                    <i class="fas fa-key"></i>
-                    <h3>Translation Setup</h3>
-                    <p>For real-time translation:</p>
-                    <ul>
-                        <li>App handles API keys automatically</li>
-                        <li>No manual setup required</li>
-                        <li>Premium unlocks all 20+ languages</li>
-                        <li>Free version includes 5 languages</li>
-                    </ul>
+                <h1 class="hero-title">Speak2Text</h1>
+                <p class="hero-subtitle">Real-time voice-to-text translation with AI-powered features</p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToSection('features')">Learn More</button>
+                    <button class="btn-secondary" onclick="scrollToSection('download')">Download App</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Core Features -->
-    <section id="features" style="background-color: #f0f4ff;">
+    <!-- Features Section -->
+    <section id="features" class="features">
         <div class="container">
-            <div class="section-title">
-                <h2>Core Features</h2>
-                <p>Maximize your productivity with these powerful features</p>
-            </div>
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need for seamless voice-to-text translation</p>
             
-            <div class="cards-grid">
-                <div class="card">
-                    <i class="fas fa-comment-dots"></i>
-                    <h3>Real-Time Transcription</h3>
-                    <p>Convert speech to text instantly:</p>
-                    <ul>
-                        <li>Works offline for enhanced privacy</li>
-                        <li>Supports 12+ source languages</li>
-                        <li>Industry-leading accuracy</li>
-                        <li>Punctuation and formatting automatically added</li>
-                    </ul>
-                </div>
-                
-                <div class="card">
-                    <i class="fas fa-exchange-alt"></i>
-                    <h3>Instant Translation</h3>
-                    <p>Break language barriers:</p>
-                    <ul>
-                        <li>Real-time translation in 20+ languages</li>
-                        <li>Powered by Microsoft Azure Translator</li>
-                        <li>Requires internet connection</li>
-                        <li>Maintains natural speech patterns</li>
-                    </ul>
-                </div>
-                
-                <div class="card">
-                    <i class="fas fa-sticky-note"></i>
-                    <h3>Smart Note Organization</h3>
-                    <p>Transform transcriptions into organized notes:</p>
-                    <ul>
-                        <li>AI-powered categorization (Work, Personal, Ideas)</li>
-                        <li>Automatic tagging and sorting</li>
-                        <li>Search across all notes</li>
-                        <li>Custom categories for premium users</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="feature-showcase">
+            <div class="features-grid">
                 <div class="feature-card">
-                    <h4><i class="fas fa-brain"></i> AI Analysis</h4>
-                    <p>Speak2Text's AI analyzes your content to provide:</p>
-                    <ul>
-                        <li>Key insights and summaries</li>
-                        <li>Action item extraction</li>
-                        <li>Sentiment analysis</li>
-                        <li>Content improvement suggestions</li>
-                        <li>Advanced analysis for premium users</li>
-                    </ul>
+                    <div class="feature-icon">🎤</div>
+                    <h3>Live Speech Recognition</h3>
+                    <p>Real-time transcription using Apple's advanced SFSpeechRecognizer with support for 20+ languages.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h4><i class="fas fa-chart-line"></i> Productivity Analytics</h4>
-                    <p>Track and improve your workflow:</p>
-                    <ul>
-                        <li>Usage statistics and trends</li>
-                        <li>Time saved metrics</li>
-                        <li>Category breakdowns</li>
-                        <li>Exportable reports (Premium)</li>
-                    </ul>
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multi-Language Translation</h3>
+                    <p>Translate between 20+ languages including English, Spanish, French, German, Japanese, and more.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h4><i class="fas fa-file-export"></i> Export Options</h4>
-                    <p>Share your content easily:</p>
-                    <ul>
-                        <li>Export as plain text</li>
-                        <li>Generate PDF documents</li>
-                        <li>Share directly to apps</li>
-                        <li>Cloud storage integration</li>
-                        <li>Enhanced options for premium</li>
-                    </ul>
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Translation</h3>
+                    <p>Instant translation as you speak using Yandex Translate API for accurate results.</p>
                 </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Smart Note Management</h3>
+                    <p>Save transcriptions and translations as organized notes with categories and search.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Get intelligent insights, summaries, and suggestions for your transcribed content.</p>
+                </div>
+                
+
             </div>
         </div>
     </section>
 
-    <!-- Premium Features -->
-    <section>
+    <!-- Languages Section -->
+    <section class="languages">
         <div class="container">
-            <div class="section-title">
-                <h2>Premium Features</h2>
-                <p>Unlock the full potential of Speak2Text with Premium</p>
-            </div>
+            <h2 class="section-title">Supported Languages</h2>
+            <p class="section-subtitle">Translate between 20+ languages with high accuracy</p>
             
-            <table class="feature-table">
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Free Version</th>
-                        <th>Premium Version</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Recording Time Limit</td>
-                        <td>30 min/day</td>
-                        <td class="check">Unlimited</td>
-                    </tr>
-                    <tr>
-                        <td>Translation Languages</td>
-                        <td>5 languages</td>
-                        <td class="check">20+ languages</td>
-                    </tr>
-                    <tr>
-                        <td>AI Analysis & Insights</td>
-                        <td>Basic</td>
-                        <td class="check">Advanced</td>
-                    </tr>
-                    <tr>
-                        <td>Note Categories</td>
-                        <td>3 categories</td>
-                        <td class="check">8+ categories</td>
-                    </tr>
-                    <tr>
-                        <td>Export Options</td>
-                        <td>Text only</td>
-                        <td class="check">PDF, Text, Share</td>
-                    </tr>
-                    <tr>
-                        <td>Advertisements</td>
-                        <td>Yes</td>
-                        <td class="check">No Ads</td>
-                    </tr>
-                    <tr>
-                        <td>Translation Priority</td>
-                        <td>Standard</td>
-                        <td class="check">Priority Processing</td>
-                    </tr>
-                    <tr>
-                        <td>Cloud Sync</td>
-                        <td><i class="fas fa-times"></i></td>
-                        <td class="check"><i class="fas fa-check"></i></td>
-                    </tr>
-                </tbody>
-            </table>
             
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="#" class="btn">
-                    <i class="fas fa-crown"></i> Upgrade to Premium
-                </a>
-            </div>
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section style="background-color: #f8f9fe;">
+    <!-- Support Section -->
+    <section id="support" class="support">
         <div class="container">
-            <div class="section-title">
-                <h2>User Testimonials</h2>
-                <p>What our users say about Speak2Text</p>
-            </div>
+            <h2 class="section-title">Support & Help</h2>
+            <p class="section-subtitle">Get help with common issues and learn how to use Speak2Text effectively</p>
             
-            <div class="testimonial-grid">
-                <div class="testimonial">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">JD</div>
-                        <div>
-                            <h4>James D.</h4>
-                            <p>Business Consultant</p>
-                        </div>
-                    </div>
-                    <p>"Speak2Text has transformed how I conduct international meetings. The real-time translation is incredibly accurate, and the note organization saves me hours every week."</p>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">MS</div>
-                        <div>
-                            <h4>Maria S.</h4>
-                            <p>Language Student</p>
-                        </div>
-                    </div>
-                    <p>"As a language learner, this app is invaluable. I can practice pronunciation and get instant translations. The AI suggestions help me improve my language skills faster."</p>
-                </div>
-                
-                <div class="testimonial">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">TP</div>
-                        <div>
-                            <h4>Thomas P.</h4>
-                            <p>Journalist</p>
-                        </div>
-                    </div>
-                    <p>"The transcription accuracy is impressive, even with technical terms. The ability to categorize interviews by topic has revolutionized my workflow. A must-have productivity tool!"</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Troubleshooting -->
-    <section id="troubleshooting">
-        <div class="container">
-            <div class="section-title">
-                <h2>Troubleshooting Guide</h2>
-                <p>Solutions to common issues</p>
-            </div>
-            
-            <div class="troubleshooting-section">
-                <div class="troubleshooting-item">
-                    <h4><i class="fas fa-microphone-slash"></i> Microphone Not Working</h4>
-                    <ul>
-                        <li>Check iOS Settings > Privacy > Microphone - enable Speak2Text</li>
-                        <li>Ensure microphone is not blocked or covered</li>
-                        <li>Restart the app and your device</li>
-                        <li>Check for iOS updates</li>
-                    </ul>
-                </div>
-                
-                <div class="troubleshooting-item">
-                    <h4><i class="fas fa-language"></i> Speech Recognition Issues</h4>
-                    <ul>
-                        <li>Ensure you have a stable internet connection</li>
-                        <li>Check that correct language is selected</li>
-                        <li>Reduce background noise</li>
-                        <li>Speak clearly and at natural pace</li>
-                    </ul>
-                </div>
-                
-                <div class="troubleshooting-item">
-                    <h4><i class="fas fa-sync-alt"></i> Translation Not Working</h4>
-                    <ul>
-                        <li>Verify internet connection</li>
-                        <li>Check target language selection</li>
-                        <li>Restart the app</li>
-                        <li>Ensure you're not in airplane mode</li>
-                    </ul>
-                </div>
-                
-                <div class="troubleshooting-item">
-                    <h4><i class="fas fa-exclamation-triangle"></i> App Freezes or Crashes</h4>
-                    <ul>
-                        <li>Update to the latest version of Speak2Text</li>
-                        <li>Restart your device</li>
-                        <li>Clear app cache (Settings > Speak2Text > Clear Cache)</li>
-                        <li>Reinstall the app if issues persist</li>
-                    </ul>
-                </div>
-                
-                <div class="troubleshooting-item">
-                    <h4><i class="fas fa-bolt"></i> Battery Optimization</h4>
-                    <ul>
-                        <li>Enable Low Power Mode during extended use</li>
-                        <li>Reduce screen brightness</li>
-                        <li>Close background apps</li>
-                        <li>Update to latest iOS version</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Video Tutorials -->
-    <section style="background-color: #f0f8ff;">
-        <div class="container">
-            <div class="section-title">
-                <h2>Video Tutorials</h2>
-                <p>Learn how to use Speak2Text with these helpful guides</p>
-            </div>
-            
-            <div class="video-grid">
-                <div class="video-card">
-                    <div class="video-thumb">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <div class="video-info">
-                        <h4>Getting Started Guide</h4>
-                        <p>Learn how to set up and use Speak2Text for the first time</p>
-                    </div>
-                </div>
-                
-                <div class="video-card">
-                    <div class="video-thumb">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <div class="video-info">
-                        <h4>Advanced Note Organization</h4>
-                        <p>Master the AI-powered categorization system</p>
-                    </div>
-                </div>
-                
-                <div class="video-card">
-                    <div class="video-thumb">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <div class="video-info">
-                        <h4>Real-Time Translation Tips</h4>
-                        <p>Maximize accuracy for multilingual conversations</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- System Requirements -->
-    <section>
-        <div class="container">
-            <div class="section-title">
-                <h2>System Requirements & Tips</h2>
-                <p>Ensure optimal performance</p>
-            </div>
-            
-            <div class="requirements-grid">
-                <div class="requirements-card">
-                    <h4><i class="fas fa-mobile-alt"></i> Compatibility</h4>
-                    <ul>
-                        <li><strong>iOS Version:</strong> 15.0 or later</li>
-                        <li><strong>Device Support:</strong> iPhone, iPad, iPod Touch</li>
-                        <li><strong>Storage:</strong> 50MB minimum free space</li>
-                        <li><strong>Internet:</strong> Required for translation features</li>
-                    </ul>
-                </div>
-                
-                <div class="requirements-card">
-                    <h4><i class="fas fa-shield-alt"></i> Privacy & Security</h4>
-                    <ul>
-                        <li>GDPR compliant data handling</li>
-                        <li>Voice processing happens on-device</li>
-                        <li>No voice data stored on servers</li>
-                        <li>API keys secured in iOS Keychain</li>
-                        <li>Automatic data deletion after 30 days</li>
-                    </ul>
-                </div>
-                
-                <div class="requirements-card">
-                    <h4><i class="fas fa-lightbulb"></i> Performance Tips</h4>
-                    <ul>
-                        <li>Keep app updated to latest version</li>
-                        <li>Restart app weekly for optimal performance</li>
-                        <li>Use in quiet environments for best accuracy</li>
-                        <li>Close background apps during long sessions</li>
-                        <li>Enable dark mode to save battery</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="faq-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>Frequently Asked Questions</h2>
-                <p>Find quick answers to common questions</p>
-            </div>
-            
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="faqSearch" placeholder="Search FAQs...">
-            </div>
-            
-            <div class="faq-container">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Which languages does Speak2Text support? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Speak2Text supports 12+ source languages for speech recognition and 20+ languages for translation, including:</p>
-                        <ul>
-                            <li>English, Spanish, French, German, Italian</li>
-                            <li>Chinese, Japanese, Korean, Arabic, Russian</li>
-                            <li>Portuguese, Dutch, Swedish, Turkish, Hindi</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Does Speak2Text work offline? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Yes, the speech-to-text functionality works offline for enhanced privacy. However, translation features require an internet connection as they utilize Microsoft Azure's cloud-based translation services.</p>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        How is my voice data handled? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Privacy is our top priority:</p>
-                        <ul>
-                            <li>Voice processing happens entirely on your device</li>
-                            <li>No voice recordings are stored or sent to servers</li>
-                            <li>Transcripts are only saved if you choose to save them</li>
-                            <li>We don't sell or share your data with third parties</li>
-                            <li>All data is encrypted and GDPR compliant</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        How can I improve transcription accuracy? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>For best results:</p>
-                        <ul>
-                            <li>Use in a quiet environment</li>
-                            <li>Position your device 6-12 inches from your mouth</li>
-                            <li>Speak clearly at a natural pace</li>
-                            <li>Ensure you have the correct language selected</li>
-                            <li>Update to the latest version of the app</li>
-                            <li>Use premium for advanced noise cancellation</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        How do I export my notes? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Exporting notes is simple:</p>
-                        <ul>
-                            <li>Open the note you want to export</li>
-                            <li>Tap the share icon in the top right corner</li>
-                            <li>Choose your export format (Text, PDF)</li>
-                            <li>Select where to send/save the file</li>
-                            <li>Premium users get additional export options</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Why do I need an API key for translation? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Speak2Text automatically handles API keys for Microsoft Azure Translator services:</p>
-                        <ul>
-                            <li>No manual setup is required for most users</li>
-                            <li>The app manages keys securely in the background</li>
-                            <li>Your key is stored securely in iOS Keychain</li>
-                            <li>We never access or store your key on our servers</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        How does the AI content analysis work? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Our AI analyzes your content to provide:</p>
-                        <ul>
-                            <li>Key insights and summaries of long content</li>
-                            <li>Automatic extraction of action items</li>
-                            <li>Sentiment analysis of conversations</li>
-                            <li>Content improvement suggestions</li>
-                            <li>Advanced analysis for premium users</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        Is Speak2Text accessible for users with disabilities? <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Yes, we prioritize accessibility:</p>
-                        <ul>
-                            <li>Full VoiceOver support</li>
-                            <li>High contrast mode</li>
-                            <li>Adjustable text sizes</li>
-                            <li>Compatibility with Switch Control</li>
-                            <li>Designed following WCAG guidelines</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>Contact Support</h2>
-                <p>Can't find what you need? Our team is here to help</p>
-            </div>
-            
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h3>Get in Touch</h3>
-                    <p>We typically respond to inquiries within 24 hours.</p>
+            <div class="support-content">
+                <div class="faq-section">
+                    <h3>Frequently Asked Questions</h3>
                     
-                    <div class="contact-detail">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email Support</h4>
-                            <p>yassinbouasri@outlook.com</p>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I start using speech recognition?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>1. Open the app and grant microphone permissions when prompted</p>
+                            <p>2. Select your source language from the language picker</p>
+                            <p>3. Choose your target language for translation</p>
+                            <p>4. Tap the microphone button and start speaking</p>
+                            <p>5. Your speech will be transcribed in real-time and translated automatically</p>
                         </div>
                     </div>
                     
-                    <div class="contact-detail">
-                        <i class="fas fa-book"></i>
-                        <div>
-                            <h4>Documentation</h4>
-                            <p>Comprehensive user guides and tutorials</p>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I save my transcriptions?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>After recording, tap the "Save" button to store your transcription and translation as a note. You can organize notes by categories like Personal, Work, or Study.</p>
                         </div>
                     </div>
                     
-                    <div class="contact-detail">
-                        <i class="fas fa-shield-alt"></i>
-                        <div>
-                            <h4>Privacy Policy</h4>
-                            <p><a href="#">View our privacy commitment</a></p>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            What languages are supported?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Speak2Text supports 20+ languages including English, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese (Simplified & Traditional), Arabic, Russian, Hindi, and many more.</p>
                         </div>
                     </div>
                     
-                    <div class="contact-detail">
-                        <i class="fas fa-file-contract"></i>
-                        <div>
-                            <h4>Terms of Service</h4>
-                            <p><a href="#">Read our terms and conditions</a></p>
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How accurate is the translation?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Our app uses Yandex Translate API for high-quality translations. Accuracy varies by language pair, but generally provides excellent results for most supported languages.</p>
                         </div>
                     </div>
                     
-                    <div class="contact-actions">
-                        <a href="mailto:yassinbouasri@outlook.com" class="btn">
-                            <i class="fas fa-envelope"></i> Email Support
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            Can I use the app offline?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Speech recognition requires an internet connection, but you can view and manage your saved notes offline. For best results, ensure you have a stable internet connection.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(this)">
+                            How do I manage my notes?
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Access your notes from the Notes tab. You can search, filter by category, edit, and share your saved transcriptions and translations.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="troubleshooting-section">
+                    <h3>Troubleshooting</h3>
+                    
+                    <div class="trouble-item">
+                        <h4>Microphone not working</h4>
+                        <ul>
+                            <li>Check that you've granted microphone permissions in Settings</li>
+                            <li>Ensure your device's microphone is not being used by another app</li>
+                            <li>Try restarting the app</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="trouble-item">
+                        <h4>Translation not appearing</h4>
+                        <ul>
+                            <li>Check your internet connection</li>
+                            <li>Verify that you've selected both source and target languages</li>
+                            <li>Try speaking more clearly and at a normal pace</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="trouble-item">
+                        <h4>App crashes or freezes</h4>
+                        <ul>
+                            <li>Close the app completely and restart it</li>
+                            <li>Update to the latest version from the App Store</li>
+                            <li>Restart your device if the problem persists</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section id="privacy" class="privacy">
+        <div class="container">
+            <h2 class="section-title">Privacy & Security</h2>
+            <p class="section-subtitle">Your privacy is our top priority</p>
+            
+            
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <h2 class="section-title">Download Speak2Text</h2>
+            <p class="section-subtitle">Available on the App Store for iPhone and iPad</p>
+            
+            <div class="download-content">
+                <div class="download-info">
+                                                     <div class="app-info">
+                     <div class="app-icon">
+                         <img src="images/apple-touch-icon.png" alt="Speak2Text App Icon" class="app-icon-img">
+                     </div>
+                     <div class="app-details">
+                         <h3>Speak2Text</h3>
+                         <p>Voice-to-Text Translation</p>
+                     </div>
+                 </div>
+                    
+                    
+                    
+                    <div class="download-actions">
+                        <a href="#" class="btn-app-store">
+                            <span class="app-store-text">Download on the</span>
+                            <span class="app-store-title">App Store</span>
                         </a>
-                        <a href="https://apps.apple.com" class="btn btn-outline">
-                            <i class="fab fa-apple"></i> Visit App Store
-                        </a>
+                        <button class="btn-secondary" onclick="scrollToSection('features')">Learn More</button>
                     </div>
                 </div>
                 
-                <div class="contact-info">
-                    <h3>Support Resources</h3>
-                    
-                    <div class="contact-detail">
-                        <i class="fas fa-video"></i>
-                        <div>
-                            <h4>Video Tutorials</h4>
-                            <p>Step-by-step guides for all features</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-detail">
-                        <i class="fas fa-book-open"></i>
-                        <div>
-                            <h4>User Manual</h4>
-                            <p>Complete guide to Speak2Text features</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-detail">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <h4>Troubleshooting Guide</h4>
-                            <p>Solutions to common issues</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-detail">
-                        <i class="fas fa-comments"></i>
-                        <div>
-                            <h4>Community Forum</h4>
-                            <p>Connect with other users</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-detail">
-                        <i class="fas fa-universal-access"></i>
-                        <div>
-                            <h4>Accessibility</h4>
-                            <p>Information for users with disabilities</p>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h3>Speak2Text</h3>
-                    <p>Real-time speech to text and translation for global communication and productivity.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Speak2Text</h4>
+                    <p>Real-time voice-to-text translation with AI-powered features for productivity and communication.</p>
                 </div>
                 
-                <div class="footer-col">
-                    <h3>Resources</h3>
+                <div class="footer-section">
+                    <h4>Support</h4>
                     <ul>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Tutorial Videos</a></li>
-                        <li><a href="#">Release Notes</a></li>
-                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#support">Help Center</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#download">Download</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-col">
-                    <h3>Legal</h3>
+                <div class="footer-section">
+                    <h4>Features</h4>
                     <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">GDPR Compliance</a></li>
-                        <li><a href="#">Accessibility Statement</a></li>
+                        <li><a href="#features">Speech Recognition</a></li>
+                        <li><a href="#features">Translation</a></li>
+                        <li><a href="#features">Note Management</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-col">
-                    <h3>Download</h3>
+                <div class="footer-section">
+                    <h4>Contact</h4>
                     <ul>
-                        <li><a href="https://apps.apple.com">App Store</a></li>
-                        <li><a href="#">Enterprise Solutions</a></li>
-                        <li><a href="#">Education Discount</a></li>
-                        <li><a href="#">Business Plans</a></li>
+                        <li><a href="mailto:yassinbouasri@outlook.com">yassinbouasri@outlook.com</a></li>
+                        <li><a href="https://github.com/yourusername/speak2text">GitHub</a></li>
                     </ul>
                 </div>
             </div>
             
-            <div class="copyright">
-                <p>&copy; 2023 Speak2Text. All rights reserved. Apple and the Apple logo are trademarks of Apple Inc.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Speak2Text. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script>
-        // FAQ Accordion
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                faqItem.classList.toggle('active');
-            });
-        });
-        
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Search functionality
-        const faqSearch = document.getElementById('faqSearch');
-        if (faqSearch) {
-            faqSearch.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const faqItems = document.querySelectorAll('.faq-item');
-                
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question').textContent.toLowerCase();
-                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
-                    
-                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        }
-        
-        // Dark mode detection
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-        
-        // Add current year to copyright
-        document.addEventListener('DOMContentLoaded', function() {
-            const year = new Date().getFullYear();
-            const copyrightElement = document.querySelector('.copyright p');
-            if (copyrightElement) {
-                copyrightElement.innerHTML = copyrightElement.innerHTML.replace('2023', year);
-            }
-        });
-    </script>
+    <script src="support.js"></script>
 </body>
-</html>
+</html> 
